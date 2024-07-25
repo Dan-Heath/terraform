@@ -632,8 +632,10 @@ func (n *NodeDestroyableOutput) Execute(ctx EvalContext, op walkOperation) tfdia
 	changes := ctx.Changes()
 	if changes != nil && n.Planning {
 		change := &plans.OutputChange{
-			Addr:      n.Addr,
-			Sensitive: sensitiveBefore,
+			Addr:            n.Addr,
+			Sensitive:       sensitiveBefore,
+			BeforeSensitive: sensitiveBefore,
+			AfterSensitive:  false,
 			Change: plans.Change{
 				Action: plans.Delete,
 				Before: before,
@@ -724,8 +726,10 @@ func (n *NodeApplyableOutput) setValue(namedVals *namedvals.State, state *states
 		// Non-ephemeral output values get their changes recorded in the plan
 		if !n.Config.Ephemeral {
 			change := &plans.OutputChange{
-				Addr:      n.Addr,
-				Sensitive: sensitiveChange,
+				Addr:            n.Addr,
+				Sensitive:       sensitiveChange,
+				BeforeSensitive: sensitiveBefore,
+				AfterSensitive:  n.Config.Sensitive,
 				Change: plans.Change{
 					Action: action,
 					Before: before,
